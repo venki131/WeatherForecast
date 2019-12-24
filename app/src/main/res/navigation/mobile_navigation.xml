@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/currentWeatherFragment">
+
+    <fragment
+        android:id="@+id/currentWeatherFragment"
+        android:name="com.venkatesh.forecast.ui.weather.current.CurrentWeatherFragment"
+        android:label="@string/today"
+        tools:layout="@layout/current_weather_fragment" />
+    <fragment
+        android:id="@+id/futureListWeatherFragment"
+        android:name="com.venkatesh.forecast.ui.weather.future.list.FutureListWeatherFragment"
+        android:label="@string/_7_days"
+        tools:layout="@layout/future_list_weather_fragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.venkatesh.forecast.ui.settings.SettingsFragment"
+        android:label="@string/settings" />
+</navigation>
