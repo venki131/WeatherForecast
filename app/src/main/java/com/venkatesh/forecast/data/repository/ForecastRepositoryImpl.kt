@@ -5,6 +5,7 @@ import com.venkatesh.forecast.data.db.CurrentWeatherDao
 import com.venkatesh.forecast.data.db.entity.CurrentWeatherEntry
 import com.venkatesh.forecast.data.network.WeatherNetworkDataSource
 import com.venkatesh.forecast.data.network.response.CurrentWeatherResponse
+import com.venkatesh.forecast.data.provider.UnitProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,9 +13,12 @@ import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
 import java.util.*
 
+const val IMPERIAL = "IMPERIAL"
+
 class ForecastRepositoryImpl(
     private val currentWeatherDao: CurrentWeatherDao,
-    private val weatherNetworkDataSource: WeatherNetworkDataSource
+    private val weatherNetworkDataSource: WeatherNetworkDataSource,
+    private val unitProvider: UnitProvider
 ) : ForecastRepository {
 
     init {
@@ -50,14 +54,10 @@ class ForecastRepositoryImpl(
     }
 
     private fun getMetricSystem(): String {
-        val countryCode: String = Locale.getDefault().country
-        if ("US" == countryCode ||
-            "LR" == countryCode ||
-            "MM" == countryCode
-        )
-            return "F"
+        return if (unitProvider.getUnitSystem().name == IMPERIAL)
+            "F"
         else
-            return "M"
+            "M"
     }
 
     private fun isFetchCurrentNeeded(lastFetchTime: ZonedDateTime): Boolean {

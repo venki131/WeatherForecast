@@ -1,9 +1,12 @@
 package com.venkatesh.forecast
 
 import android.app.Application
+import androidx.preference.PreferenceManager
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.venkatesh.forecast.data.db.ForecastDatabase
 import com.venkatesh.forecast.data.network.*
+import com.venkatesh.forecast.data.provider.UnitProvider
+import com.venkatesh.forecast.data.provider.UnitProviderImpl
 import com.venkatesh.forecast.data.repository.ForecastRepository
 import com.venkatesh.forecast.data.repository.ForecastRepositoryImpl
 import com.venkatesh.forecast.ui.weather.current.CurrentWeatherViewModelFactory
@@ -25,13 +28,21 @@ class ForecastApplication : Application(), KodeinAware {
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
         bind() from singleton { ApixuWeatherApi(instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
-        bind<ForecastRepository>() with singleton { ForecastRepositoryImpl(instance(), instance()) }
-        bind() from provider { CurrentWeatherViewModelFactory(instance()) }
+        bind<ForecastRepository>() with singleton {
+            ForecastRepositoryImpl(
+                instance(),
+                instance(),
+                instance()
+            )
+        }
+        bind<UnitProvider>() with singleton { UnitProviderImpl(instance()) }
+        bind() from provider { CurrentWeatherViewModelFactory(instance(), instance()) }
     }
 
     override fun onCreate() {
         super.onCreate()
         AndroidThreeTen.init(this)
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
     }
 
 }
