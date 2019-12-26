@@ -1,10 +1,14 @@
 package com.venkatesh.forecast
 
 import android.app.Application
+import android.content.Context
 import androidx.preference.PreferenceManager
+import com.google.android.gms.location.LocationServices
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.venkatesh.forecast.data.db.ForecastDatabase
 import com.venkatesh.forecast.data.network.*
+import com.venkatesh.forecast.data.provider.LocationProvider
+import com.venkatesh.forecast.data.provider.LocationProviderImpl
 import com.venkatesh.forecast.data.provider.UnitProvider
 import com.venkatesh.forecast.data.provider.UnitProviderImpl
 import com.venkatesh.forecast.data.repository.ForecastRepository
@@ -25,11 +29,16 @@ class ForecastApplication : Application(), KodeinAware {
 
         bind() from singleton { ForecastDatabase(instance()) }
         bind() from singleton { instance<ForecastDatabase>().currentWeatherDao() }
+        bind() from singleton { instance<ForecastDatabase>().weatherLocationDao() }
         bind<ConnectivityInterceptor>() with singleton { ConnectivityInterceptorImpl(instance()) }
         bind() from singleton { ApixuWeatherApi(instance()) }
         bind<WeatherNetworkDataSource>() with singleton { WeatherNetworkDataSourceImpl(instance()) }
+        bind() from provider { LocationServices.getFusedLocationProviderClient(instance<Context>()) }
+        bind<LocationProvider>() with singleton { LocationProviderImpl(instance(), instance()) }
         bind<ForecastRepository>() with singleton {
             ForecastRepositoryImpl(
+                instance(),
+                instance(),
                 instance(),
                 instance(),
                 instance()

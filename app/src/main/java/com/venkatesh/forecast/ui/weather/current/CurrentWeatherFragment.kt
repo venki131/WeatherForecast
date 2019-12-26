@@ -41,11 +41,12 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
 
     private fun bindUI() = launch {
         val currentWeather = viewModel.weather.await()
+        val weatherLocation = viewModel.weatherLocation.await()
+
         currentWeather.observe(this@CurrentWeatherFragment, Observer {
             if (it == null) return@Observer
             //textView.text = it.toString()
             progressCircular.visibility = View.GONE
-            updateLocation("Bangalore")
             updateDateToToday()
             updateTemp(it.temperature, it.feelslike)
             if (it.weatherDescriptions.isNotEmpty())
@@ -59,6 +60,12 @@ class CurrentWeatherFragment : ScopedFragment(), KodeinAware {
             if (it.weatherIcons.isNotEmpty())
                 GlideApp.with(this@CurrentWeatherFragment).load(it.weatherIcons[0])
                     .into(conditionWeatherIcon)
+        })
+
+        weatherLocation.observe(this@CurrentWeatherFragment, Observer {
+            if (it == null)
+                return@Observer
+            updateLocation(it.name)
         })
     }
 

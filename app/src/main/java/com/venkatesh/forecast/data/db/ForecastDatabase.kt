@@ -3,16 +3,18 @@ package com.venkatesh.forecast.data.db
 import android.content.Context
 import androidx.room.*
 import com.venkatesh.forecast.data.db.entity.CurrentWeatherEntry
+import com.venkatesh.forecast.data.db.entity.WeatherLocation
 import com.venkatesh.forecast.utils.Converters
 
 @Database(
-    entities = [CurrentWeatherEntry::class],
+    entities = [CurrentWeatherEntry::class, WeatherLocation::class],
     version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class ForecastDatabase : RoomDatabase() {
     abstract fun currentWeatherDao(): CurrentWeatherDao
+    abstract fun weatherLocationDao(): WeatherLocationDao
 
     companion object {
         @Volatile
